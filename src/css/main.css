@@ -4,6 +4,13 @@
  */
 
 /* ============================================
+   Component Imports
+   ============================================ */
+@import './components/layout.css';
+@import './components/prompt-card.css';
+@import './components/buttons.css';
+
+/* ============================================
    Reset & Base
    ============================================ */
 
@@ -38,13 +45,9 @@ body {
    ============================================ */
 
 #app {
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
   min-height: 100dvh;
-  padding: var(--space-md);
-  max-width: 600px;
-  margin: 0 auto;
+  width: 100%;
 }
 
 /* ============================================

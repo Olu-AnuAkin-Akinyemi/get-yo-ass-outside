@@ -1,0 +1,54 @@
+/**
+ * Layout Components
+ * Main container and section layouts
+ */
+
+.main-container {
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  gap: var(--space-2xl);
+}
+
+/* Hero Section */
+.hero {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Actions Section */
+.actions {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  align-items: stretch;
+}
+
+/* Results Section */
+.results {
+  width: 100%;
+  max-width: 800px;
+  margin-top: var(--space-lg);
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .main-container {
+    padding: var(--space-2xl);
+    gap: var(--space-3xl);
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .main-container {
+    gap: var(--space-3xl);
+  }
+}

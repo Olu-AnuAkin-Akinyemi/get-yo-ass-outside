@@ -7,10 +7,8 @@
 import '@/css/variables.css';
 import '@/css/main.css';
 
-// Module imports (uncomment as implemented)
-// import { initVoice } from '@/modules/voice';
-// import { initGeolocation } from '@/modules/geolocation';
-// import { initUI } from '@/modules/ui';
+// Module imports
+import { initUI } from '@/modules/ui';
 
 /**
  * Initialize the application
@@ -18,10 +16,8 @@ import '@/css/main.css';
 const init = (): void => {
   console.log('🌳 Get Yo A$$ Outside - Initializing...');
   
-  // TODO: Initialize modules
-  // initUI();
-  // initVoice();
-  // initGeolocation();
+  // Initialize UI and render the app
+  initUI();
   
   console.log('✅ App initialized');
 };
