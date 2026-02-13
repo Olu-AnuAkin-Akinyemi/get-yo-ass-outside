@@ -1,0 +1,50 @@
+/**
+ * Error Card Component
+ */
+
+.error-view {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.error-card {
+  padding: var(--space-2xl) var(--space-xl);
+  text-align: center;
+}
+
+.error-card__title {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-error);
+  margin-bottom: var(--space-md);
+}
+
+.error-card__message {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text);
+  margin-bottom: var(--space-lg);
+}
+
+.error-card__help {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-muted);
+  text-align: left;
+  padding: var(--space-md);
+  background: var(--color-surface-elevated);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-lg);
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .error-card {
+    padding: var(--space-3xl) var(--space-2xl);
+  }
+  
+  .error-card__title {
+    font-size: var(--font-size-4xl);
+  }
+}

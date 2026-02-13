@@ -238,7 +238,11 @@ get-yo-ass-outside/
 
 ## Known Issues / Tech Debt
 
-None currently. Phase 0 complete with proper PWA architecture.
+### Pre-Deployment: Enforce MIN_QUERY_INTERVAL in ParkService
+**File:** `src/services/park-service.ts`  
+**Issue:** `MIN_QUERY_INTERVAL` (30s) is declared and `lastQueryTimestamp` is tracked, but the cooldown is advisory only — it is logged, not enforced as a hard gate. The coordinate-based cache (5-min TTL) and geolocation cache (1-hr TTL) already prevent redundant API calls in practice, so this is not currently a problem.  
+**Action:** Before deployment, evaluate whether Overpass rate-limiting is being hit. If so, enforce the interval as a hard gate that rejects or queues requests within the cooldown window. If not, remove `MIN_QUERY_INTERVAL` and `lastQueryTimestamp` to avoid confusing future developers.  
+**Priority:** Low — address during Phase 4 (Polish & Deploy).
 
 ---
 

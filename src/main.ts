@@ -3,6 +3,8 @@
  * Main application entry point
  */
 
+/// <reference types="vite/client" />
+
 // CSS imports
 import '@/css/variables.css';
 import '@/css/main.css';
@@ -10,16 +12,19 @@ import '@/css/main.css';
 // Module imports
 import { initUI } from '@/modules/ui';
 
+// Debug mode
+const DEBUG = import.meta.env.DEV;
+
 /**
  * Initialize the application
  */
 const init = (): void => {
-  console.log('🌳 Get Yo A$$ Outside - Initializing...');
+  if (DEBUG) console.log('🌳 Get Yo A$$ Outside - Initializing...');
   
   // Initialize UI and render the app
   initUI();
   
-  console.log('✅ App initialized');
+  if (DEBUG) console.log('✅ App initialized');
 };
 
 // Run on DOM ready

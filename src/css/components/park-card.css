@@ -1,0 +1,103 @@
+/**
+ * Park Card Component (Basic)
+ * Functional styling - to be polished by frontend-agent
+ */
+
+.results-header {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+
+.results-header__title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin-bottom: var(--space-sm);
+}
+
+.results-header__subtitle {
+  font-size: var(--font-size-base);
+  color: var(--color-text-muted);
+}
+
+.parks-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.park-card {
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.park-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.park-card__name {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  margin: 0;
+  flex: 1;
+}
+
+.park-card__distance {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.park-card__type {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  text-transform: capitalize;
+}
+
+.park-card__actions {
+  margin-top: var(--space-sm);
+}
+
+.park-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+}
+
+.park-card__link:hover {
+  text-decoration: underline;
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--space-2xl);
+}
+
+.empty-state__message {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-lg);
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .results-header__title {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .park-card__name {
+    font-size: var(--font-size-xl);
+  }
+}

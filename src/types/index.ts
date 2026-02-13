@@ -21,7 +21,8 @@ export interface UserLocation extends Coordinates {
 // Parks
 // ============================================
 
-export type ParkType = 'park' | 'nature_reserve' | 'garden' | 'trail' | 'recreation_ground';
+// TODO: Add 'trail' | 'recreation_ground' when Overpass query supports these leisure types
+export type ParkType = 'park' | 'nature_reserve' | 'garden';
 
 export interface Park {
   id: string;
@@ -64,6 +65,7 @@ export interface OverpassElement {
 
 export type AppStatus = 'idle' | 'loading' | 'success' | 'error';
 
+// TODO: Wire up when state management is implemented
 export interface AppState {
   status: AppStatus;
   locationGranted: boolean;
@@ -78,6 +80,7 @@ export interface AppState {
 // Voice Prompts
 // ============================================
 
+// TODO: Wire up when state management is implemented
 export interface VoicePrompt {
   id: string;
   text: string;
@@ -88,6 +91,7 @@ export interface VoicePrompt {
 // Storage
 // ============================================
 
+// TODO: Wire up when state management is implemented
 export interface StorageKeys {
   USER_LOCATION: 'gyao_user_location';
   LAST_PROMPT_INDEX: 'gyao_last_prompt';
@@ -107,3 +111,9 @@ export interface GeolocationConfig {
 }
 
 export type GeolocationErrorCode = 1 | 2 | 3; // PERMISSION_DENIED | POSITION_UNAVAILABLE | TIMEOUT
+
+export interface GeolocationError {
+  code: GeolocationErrorCode;
+  message: string;
+  userFriendlyMessage: string;
+}

@@ -31,7 +31,10 @@ const prompts: string[] = [
  */
 export const getRandomPrompt = (): string => {
   const randomIndex = Math.floor(Math.random() * prompts.length);
-  return prompts[randomIndex];
+  const prompt = prompts[randomIndex];
+  
+  // Fallback in case array is empty (should never happen)
+  return prompt ?? 'You know what you need to do. Get outside.';
 };
 
 /**
