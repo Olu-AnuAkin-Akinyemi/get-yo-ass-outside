@@ -6,6 +6,7 @@
 /// <reference types="vite/client" />
 
 import { getRandomPrompt } from '@/modules/voice';
+import { detectPlatform, getLocationPermissionHelp } from '@/utils/device';
 
 // Debug mode (only log in development)
 const DEBUG = import.meta.env.DEV;
@@ -210,9 +211,7 @@ const renderErrorView = (message: string, errorCode: number): void => {
           <p class="error-card__message">${escapeHtml(message)}</p>
           ${errorCode === 1 ? `
             <p class="error-card__help">
-              To enable location access:
-              <br>• Check your browser settings
-              <br>• Look for the location icon in the address bar
+              ${getLocationPermissionHelp(detectPlatform())}
             </p>
           ` : ''}
         </div>
