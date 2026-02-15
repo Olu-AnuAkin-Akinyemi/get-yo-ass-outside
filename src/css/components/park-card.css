@@ -25,6 +25,8 @@
   flex-direction: column;
   gap: var(--space-md);
   margin-bottom: var(--space-xl);
+  list-style: none;
+  padding: 0;
 }
 
 .park-card {
@@ -32,6 +34,20 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.park-card:active {
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .park-card {
+    transition: none;
+  }
+  .park-card:active {
+    transform: none;
+  }
 }
 
 .park-card__header {
@@ -47,12 +63,23 @@
   color: var(--color-text);
   margin: 0;
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.park-card__icon {
+  font-size: var(--font-size-xl);
+  flex-shrink: 0;
 }
 
 .park-card__distance {
   font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-on-primary);
+  background: var(--color-primary);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-full);
   white-space: nowrap;
 }
 
@@ -60,24 +87,36 @@
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   text-transform: capitalize;
+  margin-left: calc(var(--font-size-xl) + var(--space-sm));
 }
 
 .park-card__actions {
-  margin-top: var(--space-sm);
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
 }
 
 .park-card__link {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-xs);
-  font-size: var(--font-size-sm);
+  justify-content: center;
+  gap: var(--space-sm);
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   color: var(--color-primary);
   text-decoration: none;
-  font-weight: var(--font-weight-medium);
+  background: var(--color-surface-elevated);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
 }
 
-.park-card__link:hover {
-  text-decoration: underline;
+.park-card__link:hover,
+.park-card__link:focus {
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
+  text-decoration: none;
 }
 
 .empty-state {
@@ -85,10 +124,24 @@
   padding: var(--space-2xl);
 }
 
+.empty-state__icon {
+  font-size: 4rem;
+  margin-bottom: var(--space-lg);
+  opacity: 0.6;
+}
+
+.empty-state__title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  margin-bottom: var(--space-sm);
+}
+
 .empty-state__message {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-base);
   color: var(--color-text-muted);
   margin-bottom: var(--space-lg);
+  line-height: var(--line-height-relaxed);
 }
 
 /* Tablet and up */

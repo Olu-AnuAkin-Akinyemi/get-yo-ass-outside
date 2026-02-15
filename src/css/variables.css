@@ -9,22 +9,22 @@
      ============================================ */
   
   /* Primary Colors */
-  --color-primary: #2D5A27;          /* Deep forest green */
-  --color-primary-light: #3D7A37;
-  --color-primary-dark: #1D4A17;
+  --color-primary: #364832;          /* Dark Olive / Collard Green - darkened for 4.5:1 contrast */
+  --color-primary-light: #4A5E44;
+  --color-primary-dark: #283828;
   
   /* Secondary Colors */
-  --color-secondary: #8B4513;        /* Warm wood brown */
-  --color-secondary-light: #A0522D;
-  --color-secondary-dark: #6B3503;
+  --color-secondary: #C45A34;        /* Terracotta / Red Clay */
+  --color-secondary-light: #D56B45;
+  --color-secondary-dark: #A3492A;
   
   /* Accent */
-  --color-accent: #4A7C59;           /* Sage green */
+  --color-accent: #F4C430;           /* Saffron / Sun */
   
   /* Backgrounds */
-  --color-background: #F5F5DC;       /* Soft beige/cream */
-  --color-surface: rgba(255, 255, 255, 0.6);
-  --color-surface-elevated: rgba(255, 255, 255, 0.8);
+  --color-background: #F9F5EB;       /* Unbleached Cotton / Cream */
+  --color-surface: rgba(240, 235, 220, 0.7); /* Parchment transparency */
+  --color-surface-elevated: rgba(240, 235, 220, 0.9);
   
   /* Text */
   --color-text: #1A1A1A;
@@ -119,6 +119,11 @@
      ============================================ */
   --touch-target-min: 44px;
   --touch-target-comfortable: 48px;
+  
+  /* ============================================
+     Component Sizes
+     ============================================ */
+  --header-height: 36px; /* Pill header height for padding calculations */
 }
 
 /* ============================================
@@ -126,26 +131,26 @@
    ============================================ */
 [data-theme="dark"] {
   /* Primary Colors */
-  --color-primary: #4A7C59;          /* Sage green */
-  --color-primary-light: #5A9C69;
-  --color-primary-dark: #3A6C49;
+  --color-primary: #6B8E63;          /* Lighter Olive for dark mode */
+  --color-primary-light: #7E9F76;
+  --color-primary-dark: #5A7D52;
   
   /* Secondary Colors */
-  --color-secondary: #D2691E;        /* Lighter wood */
-  --color-secondary-light: #E2792E;
-  --color-secondary-dark: #B2590E;
+  --color-secondary: #D37B5D;        /* Softer Terracotta */
+  --color-secondary-light: #E09075;
+  --color-secondary-dark: #C06648;
   
   /* Accent */
-  --color-accent: #6B8E23;           /* Olive drab */
+  --color-accent: #F4C430;           /* Saffron/Sun (same as light) */
   
   /* Backgrounds */
-  --color-background: #0D1117;       /* Deep night */
-  --color-surface: rgba(30, 40, 50, 0.7);
-  --color-surface-elevated: rgba(40, 50, 60, 0.8);
+  --color-background: #1C1F1C;       /* Dark Earth/Night */
+  --color-surface: rgba(45, 45, 40, 0.7);
+  --color-surface-elevated: rgba(60, 60, 55, 0.8);
   
   /* Text */
-  --color-text: #E6E6E6;
-  --color-text-muted: #A0A0A0;
+  --color-text: #F0EBE0;             /* Off-white parchment */
+  --color-text-muted: #A8A49D;       /* Warm grey */
   --color-text-on-primary: #FFFFFF;
   
   /* Borders */

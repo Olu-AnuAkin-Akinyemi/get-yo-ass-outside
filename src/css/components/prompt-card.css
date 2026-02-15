@@ -8,14 +8,29 @@
   text-align: center;
   margin: 0 auto;
   max-width: 600px;
+  position: relative;
+}
+
+/* Decorative quotation marks */
+.prompt-card::before {
+  content: '"';
+  position: absolute;
+  top: var(--space-md);
+  left: var(--space-md);
+  font-size: var(--font-size-4xl);
+  font-family: Georgia, serif;
+  color: var(--color-primary);
+  opacity: 0.3;
+  line-height: 1;
 }
 
 .prompt-card__text {
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-semibold);
-  line-height: var(--line-height-tight);
+  line-height: var(--line-height-base);
   color: var(--color-text);
   margin: 0;
+  font-style: italic;
 }
 
 /* Tablet and up */

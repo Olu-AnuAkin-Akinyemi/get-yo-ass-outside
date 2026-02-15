@@ -7,6 +7,7 @@
 
 import { getRandomPrompt } from '@/modules/voice';
 import { detectPlatform, getLocationPermissionHelp } from '@/utils/device';
+import { StorageService } from '@/services/storage-service';
 
 // Debug mode (only log in development)
 const DEBUG = import.meta.env.DEV;
@@ -15,7 +16,81 @@ const DEBUG = import.meta.env.DEV;
  * Initialize the UI and render the prompt view
  */
 export const initUI = (): void => {
+  initTheme();
+  renderHeader();
   renderPromptView();
+};
+
+/**
+ * Initialize theme from storage or default to light
+ */
+const initTheme = (): void => {
+  const savedTheme = StorageService.getTheme();
+  // Default to light mode if no preference saved
+  document.documentElement.setAttribute('data-theme', savedTheme ?? 'light');
+};
+
+/**
+ * Toggle between light and dark themes
+ */
+const toggleTheme = (): void => {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+  
+  let newTheme: 'light' | 'dark';
+  
+  if (currentTheme === 'light') {
+    newTheme = 'dark';
+  } else if (currentTheme === 'dark') {
+    newTheme = 'light';
+  } else {
+    // No explicit theme set — toggle away from system preference
+    newTheme = prefersLight ? 'dark' : 'light';
+  }
+  
+  document.documentElement.setAttribute('data-theme', newTheme);
+  StorageService.setTheme(newTheme);
+  
+  if (DEBUG) console.log(`\ud83c\udf19 Theme switched to: ${newTheme}`);
+};
+
+/**
+ * Render the app header with theme toggle
+ */
+const renderHeader = (): void => {
+  const existingHeader = document.querySelector('.app-header');
+  if (existingHeader) return;
+  
+  const header = document.createElement('header');
+  header.className = 'app-header';
+  header.innerHTML = `
+    <div class="app-header__brand">
+      <span class="app-header__logo">\ud83c\udf33</span>
+      <span>Get Outside</span>
+    </div>
+    <div class="app-header__actions">
+      <button class="icon-btn" type="button" id="theme-toggle-btn" aria-label="Toggle theme">
+        <span class="theme-toggle__icon--light">\u2600\ufe0f</span>
+        <span class="theme-toggle__icon--dark">\ud83c\udf19</span>
+      </button>
+      <button class="icon-btn" type="button" id="refresh-prompt-btn" aria-label="New prompt">
+        \ud83d\udd04
+      </button>
+    </div>
+  `;
+  
+  document.body.prepend(header);
+  
+  const themeToggle = header.querySelector<HTMLButtonElement>('#theme-toggle-btn');
+  const refreshBtn = header.querySelector<HTMLButtonElement>('#refresh-prompt-btn');
+  
+  if (themeToggle) {
+    themeToggle.addEventListener('click', toggleTheme);
+  }
+  
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', updatePrompt);
+  }
 };
 
 /**
@@ -44,8 +119,16 @@ const renderPromptView = (): void => {
       </section>
       
       <section class="actions">
-        <button class="btn btn--primary" type="button" id="find-parks-btn">
-          <span class="btn__text">Find Parks Near Me</span>
+        <!-- Animated Button with accessible SVGs -->
+        <button class="animated-button" type="button" id="find-parks-btn">
+          <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
+          </svg>
+          <span class="text">Find Parks Near Me</span>
+          <span class="circle"></span>
+          <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
+          </svg>
         </button>
       </section>
     </main>
@@ -138,11 +221,14 @@ export const renderResultsView = (parks: import('@/types').Park[]): void => {
       </section>
       
       ${hasPark ? `
-        <section class="parks-list">
+        <ul class="parks-list" role="list">
           ${parks.map((park) => `
-            <div class="park-card glass-card">
+            <li class="park-card glass-card">
               <div class="park-card__header">
-                <h2 class="park-card__name">${escapeHtml(park.name)}</h2>
+                <h2 class="park-card__name">
+                  <span class="park-card__icon" aria-hidden="true">${getParkIcon(park.type)}</span>
+                  ${escapeHtml(park.name)}
+                </h2>
                 <span class="park-card__distance">${escapeHtml(park.distanceFormatted)}</span>
               </div>
               <p class="park-card__type">${escapeHtml(park.type.replace('_', ' '))}</p>
@@ -153,15 +239,17 @@ export const renderResultsView = (parks: import('@/types').Park[]): void => {
                   rel="noopener noreferrer"
                   class="park-card__link"
                 >
-                  Get Directions →
+                  Navigate \u2192
                 </a>
               </div>
-            </div>
+            </li>
           `).join('')}
-        </section>
+        </ul>
       ` : `
-        <section class="empty-state">
-          <p class="empty-state__message">No parks found nearby. Try expanding your search area or check back later.</p>
+        <section class="empty-state glass-card">
+          <div class="empty-state__icon">\ud83c\udf33</div>
+          <h2 class="empty-state__title">No parks nearby... yet</h2>
+          <p class="empty-state__message">We couldn't find parks within walking distance. But that fresh air is still out there \u2014 maybe take a walk anyway?</p>
         </section>
       `}
       
@@ -218,9 +306,18 @@ const renderErrorView = (message: string, errorCode: number): void => {
       </section>
       
       <section class="actions">
-        <button class="btn btn--primary" type="button" id="retry-btn">
-          <span class="btn__text">Try Again</span>
+        <!-- Retry Button (Animated) with accessible SVGs -->
+        <button class="animated-button" type="button" id="retry-btn">
+          <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
+          </svg>
+          <span class="text">Try Again</span>
+          <span class="circle"></span>
+          <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
+          </svg>
         </button>
+        
         <button class="btn btn--secondary" type="button" id="back-home-btn">
           <span class="btn__text">Back</span>
         </button>
@@ -248,11 +345,13 @@ const renderErrorView = (message: string, errorCode: number): void => {
  */
 export const showLoading = (): void => {
   const findParksBtn = document.querySelector<HTMLButtonElement>('#find-parks-btn');
-  const btnText = findParksBtn?.querySelector<HTMLSpanElement>('.btn__text');
+  // Use .text for animated button or fallback to .btn__text
+  const btnText = findParksBtn?.querySelector<HTMLSpanElement>('.text, .btn__text');
   
   if (findParksBtn && btnText) {
     findParksBtn.disabled = true;
-    btnText.textContent = 'Getting your location...'; // Updated text
+    findParksBtn.classList.add('btn--loading');
+    btnText.textContent = 'Finding parks...';
   }
 };
 
@@ -261,11 +360,12 @@ export const showLoading = (): void => {
  */
 export const hideLoading = (): void => {
   const findParksBtn = document.querySelector<HTMLButtonElement>('#find-parks-btn');
-  const btnText = findParksBtn?.querySelector<HTMLSpanElement>('.btn__text');
+  const btnText = findParksBtn?.querySelector<HTMLSpanElement>('.text, .btn__text');
   
   if (findParksBtn && btnText) {
     findParksBtn.disabled = false;
-    btnText.textContent = 'Find Parks Near Me'; // textContent for text update
+    findParksBtn.classList.remove('btn--loading');
+    btnText.textContent = 'Find Parks Near Me';
   }
 };
 
@@ -300,4 +400,22 @@ const escapeHtml = (text: string): string => {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
+};
+
+/**
+ * Get emoji icon for park type
+ * @param type - Park type
+ * @returns Emoji string
+ */
+const getParkIcon = (type: import('@/types').ParkType): string => {
+  switch (type) {
+    case 'park':
+      return '\ud83c\udf33'; // 🌳
+    case 'nature_reserve':
+      return '\ud83c\udf3f'; // 🌿
+    case 'garden':
+      return '\ud83c\udf38'; // 🌸
+    default:
+      return '\ud83c\udf32'; // 🌲
+  }
 };
