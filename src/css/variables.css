@@ -172,19 +172,19 @@
    ============================================ */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    /* Apply dark mode variables when no explicit theme set */
-    --color-primary: #4A7C59;
-    --color-primary-light: #5A9C69;
-    --color-primary-dark: #3A6C49;
-    --color-secondary: #D2691E;
-    --color-secondary-light: #E2792E;
-    --color-secondary-dark: #B2590E;
-    --color-accent: #6B8E23;
-    --color-background: #0D1117;
-    --color-surface: rgba(30, 40, 50, 0.7);
-    --color-surface-elevated: rgba(40, 50, 60, 0.8);
-    --color-text: #E6E6E6;
-    --color-text-muted: #A0A0A0;
+    /* Mirror [data-theme="dark"] exactly so system preference matches manual toggle */
+    --color-primary: #6B8E63;
+    --color-primary-light: #7E9F76;
+    --color-primary-dark: #5A7D52;
+    --color-secondary: #D37B5D;
+    --color-secondary-light: #E09075;
+    --color-secondary-dark: #C06648;
+    --color-accent: #F4C430;
+    --color-background: #1C1F1C;
+    --color-surface: rgba(45, 45, 40, 0.7);
+    --color-surface-elevated: rgba(60, 60, 55, 0.8);
+    --color-text: #F0EBE0;
+    --color-text-muted: #A8A49D;
     --color-border: rgba(255, 255, 255, 0.1);
     --color-border-glass: rgba(255, 255, 255, 0.08);
     --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);

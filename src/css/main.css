@@ -338,39 +338,6 @@ a:focus {
 }
 
 /* ============================================
-   Park Cards
-   ============================================ */
-
-.park-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-  list-style: none;
-}
-
-.park-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-}
-
-.park-card__title {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-}
-
-.park-card__distance {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
-}
-
-.park-card__action {
-  align-self: flex-start;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-}
-
-/* ============================================
    Loading States
    ============================================ */
 

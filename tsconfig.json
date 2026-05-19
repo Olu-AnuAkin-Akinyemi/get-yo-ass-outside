@@ -18,7 +18,7 @@
     "noUncheckedIndexedAccess": true,
 
     // Module resolution
-    "target": "ES2020",
+    "target": "ES2021",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "esModuleInterop": true,
@@ -33,7 +33,10 @@
     },
 
     // DOM types for browser APIs
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": ["ES2021", "DOM", "DOM.Iterable"],
+
+    // Vitest globals (describe, it, expect, vi)
+    "types": ["vitest/globals"],
 
     // No emit - Vite handles compilation
     "noEmit": true,
@@ -43,6 +46,7 @@
   },
   "include": [
     "src/**/*.ts",
+    "src/**/*.test.ts",
     "vite.config.ts"
   ],
   "exclude": [

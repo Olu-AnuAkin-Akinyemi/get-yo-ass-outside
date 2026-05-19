@@ -152,47 +152,49 @@ const attachPromptViewListeners = (): void => {
 };
 
 /**
- * Handle click on "Find Parks Near Me" button
+ * Handle click on "Find Parks Near Me" or "Try Again" button
  */
-const handleFindParksClick = async (): Promise<void> => {
+const handleFindParksClick = async (event: MouseEvent): Promise<void> => {
   if (DEBUG) console.log('🔍 Find parks clicked');
-  
-  // Show loading state
-  showLoading();
-  
+
+  const btn = (event.currentTarget as HTMLButtonElement) ?? null;
+
+  // Show loading state on whichever button triggered this
+  showLoading(btn);
+
   try {
     // Import services
     const { GeolocationService } = await import('@/services/geolocation-service');
     const { ParkService } = await import('@/services/park-service');
-    
+
     // Get location
     const location = await GeolocationService.getCurrentPosition();
-    
+
     if (DEBUG) console.log('📍 Location obtained:', location);
-    
+
     // Fetch nearby parks
     const { parks, fromCache } = await ParkService.findNearbyParks(location);
-    
+
     if (DEBUG) console.log(`🌳 Found ${parks.length} parks${fromCache ? ' (from cache)' : ''}`);
-    
+
     // Hide loading and render results
-    hideLoading();
+    hideLoading(btn);
     renderResultsView(parks);
-    
+
     // Show friendly cache notification if results came from cache
     if (fromCache) {
       showCacheNotice();
     }
-    
+
   } catch (error) {
-    hideLoading();
-    
+    hideLoading(btn);
+
     // Type guard to distinguish GeolocationError from generic errors
     const isGeoError = (e: unknown): e is import('@/types').GeolocationError =>
       typeof e === 'object' && e !== null && 'userFriendlyMessage' in e;
-    
+
     if (DEBUG) console.error('Error:', error);
-    
+
     if (isGeoError(error)) {
       renderErrorView(error.userFriendlyMessage, error.code);
     } else {
@@ -231,7 +233,7 @@ export const renderResultsView = (parks: import('@/types').Park[]): void => {
                 </h2>
                 <span class="park-card__distance">${escapeHtml(park.distanceFormatted)}</span>
               </div>
-              <p class="park-card__type">${escapeHtml(park.type.replace('_', ' '))}</p>
+              <p class="park-card__type">${escapeHtml((park.type as string).replaceAll('_', ' '))}</p>
               <div class="park-card__actions">
                 <a 
                   href="https://www.google.com/maps/dir/?api=1&destination=${park.coordinates.latitude},${park.coordinates.longitude}" 
@@ -341,30 +343,31 @@ const renderErrorView = (message: string, errorCode: number): void => {
 };
 
 /**
- * Show loading state
+ * Show loading state on a button
+ * Accepts an explicit button element, or falls back to #find-parks-btn
  */
-export const showLoading = (): void => {
-  const findParksBtn = document.querySelector<HTMLButtonElement>('#find-parks-btn');
-  // Use .text for animated button or fallback to .btn__text
-  const btnText = findParksBtn?.querySelector<HTMLSpanElement>('.text, .btn__text');
-  
-  if (findParksBtn && btnText) {
-    findParksBtn.disabled = true;
-    findParksBtn.classList.add('btn--loading');
+export const showLoading = (btn?: HTMLButtonElement | null): void => {
+  const target = btn ?? document.querySelector<HTMLButtonElement>('#find-parks-btn');
+  const btnText = target?.querySelector<HTMLSpanElement>('.text, .btn__text');
+
+  if (target && btnText) {
+    target.disabled = true;
+    target.classList.add('btn--loading');
     btnText.textContent = 'Finding parks...';
   }
 };
 
 /**
- * Hide loading state
+ * Hide loading state on a button
+ * Accepts an explicit button element, or falls back to #find-parks-btn
  */
-export const hideLoading = (): void => {
-  const findParksBtn = document.querySelector<HTMLButtonElement>('#find-parks-btn');
-  const btnText = findParksBtn?.querySelector<HTMLSpanElement>('.text, .btn__text');
-  
-  if (findParksBtn && btnText) {
-    findParksBtn.disabled = false;
-    findParksBtn.classList.remove('btn--loading');
+export const hideLoading = (btn?: HTMLButtonElement | null): void => {
+  const target = btn ?? document.querySelector<HTMLButtonElement>('#find-parks-btn');
+  const btnText = target?.querySelector<HTMLSpanElement>('.text, .btn__text');
+
+  if (target && btnText) {
+    target.disabled = false;
+    target.classList.remove('btn--loading');
     btnText.textContent = 'Find Parks Near Me';
   }
 };
