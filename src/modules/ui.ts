@@ -17,8 +17,23 @@ const DEBUG = import.meta.env.DEV;
  */
 export const initUI = (): void => {
   initTheme();
+  renderSkipLink();
   renderHeader();
   renderPromptView();
+};
+
+/**
+ * Render keyboard skip link once at startup
+ */
+const renderSkipLink = (): void => {
+  const existingSkipLink = document.querySelector('.skip-link');
+  if (existingSkipLink) return;
+
+  const skipLink = document.createElement('a');
+  skipLink.className = 'skip-link';
+  skipLink.href = '#main-content';
+  skipLink.textContent = 'Skip to main content';
+  document.body.prepend(skipLink);
 };
 
 /**
@@ -109,13 +124,20 @@ const renderPromptView = (): void => {
 
   // Render the prompt view (innerHTML is appropriate here for view switching)
   app.innerHTML = `
-    <main class="main-container">
+    <main class="main-container" id="main-content" tabindex="-1">
       <section class="hero">
         <div class="prompt-card glass-card">
+          <p class="prompt-card__eyebrow">The Voice says:</p>
           <p class="prompt-card__text" role="status" aria-live="polite" id="prompt-text">
             ${escapeHtml(prompt)}
           </p>
+          <p class="prompt-card__support">Fresh air and a short walk can reset your whole day.</p>
         </div>
+      </section>
+
+      <section class="permission-panel glass-card" aria-labelledby="permission-panel-title">
+        <h2 class="permission-panel__title" id="permission-panel-title">Ready to find nearby parks?</h2>
+        <p class="permission-panel__body">Share your location so we can show walkable options near you. No location, no park map.</p>
       </section>
       
       <section class="actions">
@@ -124,11 +146,15 @@ const renderPromptView = (): void => {
           <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
           </svg>
-          <span class="text">Find Parks Near Me</span>
+          <span class="text">Use My Location</span>
           <span class="circle"></span>
           <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
           </svg>
+        </button>
+
+        <button class="btn btn--secondary" type="button" id="new-prompt-btn">
+          <span class="btn__text">Hit Me With Another Prompt</span>
         </button>
       </section>
     </main>
@@ -136,6 +162,7 @@ const renderPromptView = (): void => {
 
   // Attach event listeners after rendering
   attachPromptViewListeners();
+  focusMainContent();
   
   if (DEBUG) console.log('✅ Prompt view rendered');
 };
@@ -145,9 +172,14 @@ const renderPromptView = (): void => {
  */
 const attachPromptViewListeners = (): void => {
   const findParksBtn = document.querySelector<HTMLButtonElement>('#find-parks-btn');
+  const newPromptBtn = document.querySelector<HTMLButtonElement>('#new-prompt-btn');
   
   if (findParksBtn) {
     findParksBtn.addEventListener('click', handleFindParksClick);
+  }
+
+  if (newPromptBtn) {
+    newPromptBtn.addEventListener('click', updatePrompt);
   }
 };
 
@@ -161,6 +193,7 @@ const handleFindParksClick = async (event: MouseEvent): Promise<void> => {
 
   // Show loading state on whichever button triggered this
   showLoading(btn);
+  renderLoadingView();
 
   try {
     // Import services
@@ -216,7 +249,7 @@ export const renderResultsView = (parks: import('@/types').Park[]): void => {
   const hasPark = parks.length > 0;
 
   app.innerHTML = `
-    <main class="main-container">
+    <main class="main-container" id="main-content" tabindex="-1">
       <section class="results-header">
         <h1 class="results-header__title">Parks Near You</h1>
         <p class="results-header__subtitle">${parks.length} park${parks.length === 1 ? '' : 's'} found</p>
@@ -224,8 +257,8 @@ export const renderResultsView = (parks: import('@/types').Park[]): void => {
       
       ${hasPark ? `
         <ul class="parks-list" role="list">
-          ${parks.map((park) => `
-            <li class="park-card glass-card">
+          ${parks.map((park, index) => `
+            <li class="park-card glass-card" style="--item-index: ${index};">
               <div class="park-card__header">
                 <h2 class="park-card__name">
                   <span class="park-card__icon" aria-hidden="true">${getParkIcon(park.type)}</span>
@@ -240,6 +273,7 @@ export const renderResultsView = (parks: import('@/types').Park[]): void => {
                   target="_blank" 
                   rel="noopener noreferrer"
                   class="park-card__link"
+                  aria-label="Navigate to ${escapeHtml(park.name)} in Google Maps"
                 >
                   Navigate \u2192
                 </a>
@@ -257,7 +291,7 @@ export const renderResultsView = (parks: import('@/types').Park[]): void => {
       
       <section class="actions">
         <button class="btn btn--secondary" type="button" id="back-btn">
-          <span class="btn__text">Back</span>
+          <span class="btn__text">Back to Prompt</span>
         </button>
       </section>
     </main>
@@ -268,6 +302,8 @@ export const renderResultsView = (parks: import('@/types').Park[]): void => {
   if (backBtn) {
     backBtn.addEventListener('click', renderPromptView);
   }
+
+  focusMainContent();
   
   if (DEBUG) console.log('✅ Results view rendered');
 };
@@ -294,9 +330,9 @@ const renderErrorView = (message: string, errorCode: number): void => {
   if (!app) return;
 
   app.innerHTML = `
-    <main class="main-container">
+    <main class="main-container" id="main-content" tabindex="-1">
       <section class="error-view">
-        <div class="error-card glass-card">
+        <div class="error-card glass-card" role="alert" aria-live="assertive">
           <h1 class="error-card__title">Oops!</h1>
           <p class="error-card__message">${escapeHtml(message)}</p>
           ${errorCode === 1 ? `
@@ -338,6 +374,8 @@ const renderErrorView = (message: string, errorCode: number): void => {
   if (backBtn) {
     backBtn.addEventListener('click', renderPromptView);
   }
+
+  focusMainContent();
   
   if (DEBUG) console.log('✅ Error view rendered');
 };
@@ -351,6 +389,7 @@ export const showLoading = (btn?: HTMLButtonElement | null): void => {
   const btnText = target?.querySelector<HTMLSpanElement>('.text, .btn__text');
 
   if (target && btnText) {
+    target.dataset.originalLabel = btnText.textContent ?? 'Find Parks Near Me';
     target.disabled = true;
     target.classList.add('btn--loading');
     btnText.textContent = 'Finding parks...';
@@ -368,8 +407,33 @@ export const hideLoading = (btn?: HTMLButtonElement | null): void => {
   if (target && btnText) {
     target.disabled = false;
     target.classList.remove('btn--loading');
-    btnText.textContent = 'Find Parks Near Me';
+    btnText.textContent = target.dataset.originalLabel ?? 'Find Parks Near Me';
   }
+};
+
+/**
+ * Render loading view with skeleton cards
+ */
+const renderLoadingView = (): void => {
+  const app = document.querySelector<HTMLDivElement>('#app');
+  if (!app) return;
+
+  app.innerHTML = `
+    <main class="main-container" id="main-content" tabindex="-1">
+      <section class="results-header">
+        <h1 class="results-header__title">Finding parks...</h1>
+        <p class="results-header__subtitle" role="status" aria-live="polite">Hang tight while we check nearby options.</p>
+      </section>
+
+      <ul class="parks-list parks-list--loading" aria-hidden="true">
+        <li class="park-card glass-card skeleton-card"></li>
+        <li class="park-card glass-card skeleton-card"></li>
+        <li class="park-card glass-card skeleton-card"></li>
+      </ul>
+    </main>
+  `;
+
+  focusMainContent();
 };
 
 /**
@@ -381,17 +445,40 @@ const showCacheNotice = (): void => {
   if (!app) return;
 
   const notice = document.createElement('div');
-  notice.className = 'cache-notice';
+  notice.className = 'cache-notice toast toast--info';
   notice.setAttribute('role', 'status');
   notice.setAttribute('aria-live', 'polite');
-  notice.textContent = "Hold on now \u2014 we just checked! Here's what we found.";
+  notice.innerHTML = `
+    <p class="toast__text">Hold on now - we just checked! Here's what we found.</p>
+    <button class="toast__close" type="button" aria-label="Dismiss notice">Close</button>
+  `;
   app.prepend(notice);
+
+  const closeBtn = notice.querySelector<HTMLButtonElement>('.toast__close');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      notice.classList.add('cache-notice--dismissed');
+      setTimeout(() => notice.remove(), 250);
+    });
+  }
 
   // Auto-dismiss after 4 seconds
   setTimeout(() => {
     notice.classList.add('cache-notice--dismissed');
     setTimeout(() => notice.remove(), 300);
   }, 4000);
+};
+
+/**
+ * Move keyboard focus to main content after a view switch
+ */
+const focusMainContent = (): void => {
+  requestAnimationFrame(() => {
+    const main = document.querySelector<HTMLElement>('#main-content');
+    if (main) {
+      main.focus();
+    }
+  });
 };
 
 /**

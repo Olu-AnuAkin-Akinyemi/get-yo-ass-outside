@@ -93,9 +93,18 @@
   /* ============================================
      Glassmorphism
      ============================================ */
-  --glass-blur: 10px;
+  --glass-blur: 14px;
+  --glass-blur-soft: 8px;
+  --glass-blur-strong: 18px;
   --glass-background: var(--color-surface);
   --glass-border: var(--color-border-glass);
+  --glass-highlight: rgba(255, 255, 255, 0.3);
+  --glass-shadow-soft: 0 6px 24px rgba(0, 0, 0, 0.08);
+  --glass-shadow-strong: 0 14px 40px rgba(0, 0, 0, 0.14);
+
+  /* Focus ring for translucent UI */
+  --focus-ring: #f4c430;
+  --focus-ring-shadow: rgba(244, 196, 48, 0.35);
   
   /* ============================================
      Transitions
@@ -156,6 +165,10 @@
   /* Borders */
   --color-border: rgba(255, 255, 255, 0.1);
   --color-border-glass: rgba(255, 255, 255, 0.08);
+   --glass-highlight: rgba(255, 255, 255, 0.16);
+   --glass-shadow-soft: 0 8px 26px rgba(0, 0, 0, 0.26);
+   --glass-shadow-strong: 0 18px 48px rgba(0, 0, 0, 0.38);
+   --focus-ring-shadow: rgba(244, 196, 48, 0.25);
   
   /* Status */
   --color-success: #4A7C59;
@@ -187,6 +200,10 @@
     --color-text-muted: #A8A49D;
     --color-border: rgba(255, 255, 255, 0.1);
     --color-border-glass: rgba(255, 255, 255, 0.08);
+      --glass-highlight: rgba(255, 255, 255, 0.16);
+      --glass-shadow-soft: 0 8px 26px rgba(0, 0, 0, 0.26);
+      --glass-shadow-strong: 0 18px 48px rgba(0, 0, 0, 0.38);
+      --focus-ring-shadow: rgba(244, 196, 48, 0.25);
     --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
     --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.4);
   }
